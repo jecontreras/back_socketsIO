@@ -2,27 +2,65 @@ import { Socket } from 'socket.io';
 import socketIO from 'socket.io';
 import { UsuariosLista } from '../classes/usuarios-lista';
 import { Usuario } from '../classes/usuario';
+import { Mapa } from '../classes/mapa';
+import { Marcador } from '../classes/marcador';
 
 
 export const usuariosConectados = new UsuariosLista();
+export const mapa = new Mapa();
+
+
+//Evento de mapa
+export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
+
+    cliente.on( 'marcador-nuevo', ( marcador: Marcador ) => {
+        mapa.agregarMarcador( marcador );
+        cliente.broadcast.emit( 'marcador-nuevo', marcador );
+    });
+
+    cliente.on( 'marcador-borrar', ( id: string ) => {
+        mapa.borrarMarcador( id );
+        cliente.broadcast.emit( 'marcador-borrar', id );
+    });
+
+    cliente.on( 'marcador-mover', ( marcador: Marcador ) => {
+        mapa.moverMarcador( marcador );
+        cliente.broadcast.emit( 'marcador-mover', marcador );
+    });
+
+};
+
+
+
+
+
+
 
 
 export const conectarCliente = ( cliente: Socket, io: socketIO.Server ) => {
 
     const usuario = new Usuario( cliente.id );
     usuariosConectados.agregar( usuario );
-
 }
 
 
 export const desconectar = ( cliente: Socket, io: socketIO.Server ) => {
 
     cliente.on('disconnect', () => {
-        console.log('Cliente desconectado');
+        console.log('Cliente desconectado');    
 
         usuariosConectados.borrarUsuario( cliente.id );
 
         io.emit('usuarios-activos', usuariosConectados.getLista()  );
+        let mapasData:any = mapa.getMarcadores();
+        let filtro = mapasData[cliente.id];
+        //console.log(filtro)
+        if(filtro) {
+            mapa.eventosBackend( filtro, false);
+            mapa.borrarMarcador( filtro.id );
+            cliente.broadcast.emit( 'marcador-borrar', filtro.id );
+        }
+        
 
     });
 
