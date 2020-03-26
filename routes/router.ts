@@ -9,9 +9,30 @@ const router = Router();
 
 //mapa
 
-router.get('/mapa', ( req: Request, res: Response  ) => {
-
-    res.json( mapa.getMarcadores() );
+router.post('/mapa', ( req: Request, res: Response  ) => {
+    let filtro:any = mapa.getMarcadores(); 
+    let result:any = {};
+    let rol:string = req.body.opt;
+    let id:string = req.body.id;
+    if(rol){
+        result = {};
+        for( let [id, marcador] of Object.entries(filtro) ){
+            if(marcador['estado'] && marcador['rol'] == rol ){
+                result[id] = marcador;
+            }
+        }
+    }
+    if(id){
+        console.log(id); 
+        result = {};
+        for( let [id, marcador] of Object.entries(filtro) ){
+            if(marcador['estado'] && marcador['id'] == id ){
+                console.log(marcador)
+                result[id] = marcador;
+            }
+        }
+    }
+    res.json( result );
 
 });
 

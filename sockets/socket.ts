@@ -28,6 +28,23 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
         cliente.broadcast.emit( 'marcador-mover', marcador );
     });
 
+    cliente.on( 'orden-nuevo', ( orden: any ) => {
+        cliente.broadcast.emit( 'orden-nuevo', orden );
+    });
+
+    cliente.on( 'ofreciendo-nuevo', ( orden: any ) => {
+        cliente.broadcast.emit( 'ofreciendo-nuevo', orden );
+    });
+
+    cliente.on( 'orden-confirmada', ( orden: any ) => {
+        cliente.broadcast.emit( 'orden-confirmada', orden );
+    });
+
+    cliente.on( 'orden-finalizada', ( orden: any ) => {
+        cliente.broadcast.emit( 'orden-finalizada', orden );
+    });
+    
+
 };
 
 
@@ -41,6 +58,13 @@ export const conectarCliente = ( cliente: Socket, io: socketIO.Server ) => {
 
     const usuario = new Usuario( cliente.id );
     usuariosConectados.agregar( usuario );
+    let mapasData:any = mapa.getMarcadores();
+    let filtro: Marcador = mapasData[cliente.id];
+    if(filtro) {
+        mapa.eventosBackend( filtro, true);
+        filtro.estado = true;
+        cliente.broadcast.emit( 'marcador-nuevo', filtro );
+    }
 }
 
 
@@ -57,7 +81,8 @@ export const desconectar = ( cliente: Socket, io: socketIO.Server ) => {
         //console.log(filtro)
         if(filtro) {
             mapa.eventosBackend( filtro, false);
-            mapa.borrarMarcador( filtro.id );
+            filtro.estado = false;
+            //mapa.borrarMarcador( filtro.id );
             cliente.broadcast.emit( 'marcador-borrar', filtro.id );
         }
         

@@ -23,7 +23,7 @@ export class Mapa {
         //     lng: -75.75900589557777,
         //     lat: 45.34794635758547,
         //     color: "#19884b"
-        //   }
+        //   } 
     };
 
     constructor(){
@@ -40,7 +40,7 @@ export class Mapa {
     }
 
     async eventosBackend( marcador: Marcador, estado:boolean ){
-        let url:string = `https://apigps.herokuapp.com`//`https://apigps.herokuapp.com`;
+        let url:string = `apigps.herokuapp.com`//`https://apigps.herokuapp.com`;
         let path:string = `/personas/${marcador.userID}`;
         let data:object ={
             id: marcador.userID,
@@ -55,8 +55,10 @@ export class Mapa {
     }
 
     moverMarcador( marcador: Marcador ){
-        this.marcadores[marcador.id].lng = marcador.lng;
-        this.marcadores[marcador.id].lat = marcador.lat;
+        if( this.marcadores[marcador.id] && marcador ){
+            this.marcadores[marcador.id].lng = marcador.lng;
+            this.marcadores[marcador.id].lat = marcador.lat;
+        }
     }
 
     async https(url:string, path:string, data:object, method:string){
