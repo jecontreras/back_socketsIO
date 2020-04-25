@@ -43,6 +43,24 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
     cliente.on( 'orden-finalizada', ( orden: any ) => {
         cliente.broadcast.emit( 'orden-finalizada', orden );
     });
+
+    cliente.on('orden-cancelada', (orden) => {
+        cliente.broadcast.emit('orden-cancelada', orden);
+    });
+    // orden-programada
+    cliente.on('orden-programada-creado', (orden) => {
+        cliente.broadcast.emit('orden-programada-creado', orden);
+    });
+    cliente.on('orden-programada-eliminada', (orden) => {
+        cliente.broadcast.emit('orden-programada-eliminada', orden);
+    });
+    cliente.on('orden-programada-editada', (orden) => {
+        cliente.broadcast.emit('orden-programada-editada', orden);
+    });
+    // Ofertando orden-programada
+    cliente.on('ofreciendo-orden-programada', (orden) => {
+        cliente.broadcast.emit('ofreciendo-orden-programada', orden);
+    });
     
 
 };

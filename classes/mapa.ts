@@ -44,7 +44,8 @@ export class Mapa {
         let path:string = `/personas/${marcador.userID}`;
         let data:object ={
             id: marcador.userID,
-            conectado: estado
+            conectado: estado,
+            idSockets: marcador.id
         };
         await this.https(url, path, data, 'put' );
     }
