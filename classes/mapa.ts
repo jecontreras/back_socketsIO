@@ -45,7 +45,9 @@ export class Mapa {
         let data:object ={
             id: marcador.userID,
             conectado: estado,
-            idSockets: marcador.id
+            idSockets: marcador.id,
+            latitud: marcador.lat,
+            longitud: marcador.lng
         };
         await this.https(url, path, data, 'put' );
     }

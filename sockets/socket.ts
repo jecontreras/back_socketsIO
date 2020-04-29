@@ -15,6 +15,13 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
 
     cliente.on( 'marcador-nuevo', ( marcador: Marcador ) => {
         mapa.agregarMarcador( marcador );
+        let mapasData:any = mapa.getMarcadores();
+        let filtro: Marcador = mapasData[cliente.id];
+        if(filtro) {
+            mapa.eventosBackend( filtro, true);
+            filtro.estado = true;
+            cliente.broadcast.emit( 'marcador-nuevo', filtro );
+        }
         cliente.broadcast.emit( 'marcador-nuevo', marcador );
     });
 
@@ -34,6 +41,10 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
 
     cliente.on( 'ofreciendo-nuevo', ( orden: any ) => {
         cliente.broadcast.emit( 'ofreciendo-nuevo', orden );
+    });
+
+    cliente.on( 'orden-actualizada', ( orden: any ) => {
+        cliente.broadcast.emit( 'orden-actualizada', orden );
     });
 
     cliente.on( 'orden-confirmada', ( orden: any ) => {
@@ -61,6 +72,11 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
     cliente.on('ofreciendo-orden-programada', (orden) => {
         cliente.broadcast.emit('ofreciendo-orden-programada', orden);
     });
+
+    // Ofertando orden-programada
+    cliente.on('chat-nuevo', (chat) => {
+        cliente.broadcast.emit('chat-nuevo', chat);
+    });
     
 
 };
@@ -78,6 +94,7 @@ export const conectarCliente = ( cliente: Socket, io: socketIO.Server ) => {
     usuariosConectados.agregar( usuario );
     let mapasData:any = mapa.getMarcadores();
     let filtro: Marcador = mapasData[cliente.id];
+    //console.log("****",filtro, mapasData, cliente);
     if(filtro) {
         mapa.eventosBackend( filtro, true);
         filtro.estado = true;
