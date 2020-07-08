@@ -40,7 +40,7 @@ export class Mapa {
     }
 
     async eventosBackend( marcador: Marcador, estado:boolean ){
-        let url:string = `apigps.herokuapp.com`//`https://apigps.herokuapp.com`;
+        let url:string = `backendmanda.herokuapp.com`//`https://apigps.herokuapp.com`;
         let path:string = `/personas/${marcador.userID}`;
         let data:object ={
             id: marcador.userID,

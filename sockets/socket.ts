@@ -77,6 +77,15 @@ export const mapaSockets = ( cliente: Socket, io: socketIO.Server ) => {
     cliente.on('chat-nuevo', (chat) => {
         cliente.broadcast.emit('chat-nuevo', chat);
     });
+
+    cliente.on('drive', (drive) => {
+        cliente.broadcast.emit('drive', drive);
+    });
+
+    // Adminstracion cambios
+    cliente.on('administracion', (admin) => {
+        cliente.broadcast.emit('administracion', admin);
+    });
     
 
 };
